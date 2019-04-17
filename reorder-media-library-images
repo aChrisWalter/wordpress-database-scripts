@@ -1,0 +1,13 @@
+/*////    Script to make recently added imgaes at the end of the Media Library UI    ////*/
+-- ------ 
+/* 1. find wp_posts id of thumbnail image */
+-- manually set blog id ( from WP admin area ) --
+SET @blogpost = 1697;
+/* get featured image id for blog post ( _thumbnail_id value ) */
+SET @thumbnail = (SELECT meta_value from wp_postmeta where post_id = @blogpost AND meta_key = '_thumbnail_id');
+
+/* 2. update post_date_gmt to date a year in the past --> this keeps the images at the end of the Media Library */
+SET @yearago = (DATE_SUB(NOW(), INTERVAL 1 YEAR));
+UPDATE wp_posts 
+	SET post_date_gmt = @yearago
+	WHERE id = @thumbnail;
